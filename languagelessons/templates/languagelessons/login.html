@@ -4,6 +4,35 @@
 
 {% block content %}
 
-
+<section class="section">
+    <div class="container">
+        <div class="rows">
+            <div class="row my-2">
+                <article class="panel is-danger">
+                    <p class="panel-heading">
+                      Login
+                    </p>
+                    <div class="panel-block">
+                        <form class="form-container" action="" method="POST">
+                            {% csrf_token %}
+                            <div class="columns is-mobile">
+                                <div class="column my-1 is-6-desktop is-4-tablet is-4-mobile">
+                                    <p class="has-text-weight-bold"> Username: </p>
+                                    <p class="has-text-weight-bold my-1"> Account Password: </p> 
+                                </div>
+                                <div class="column mx-4 is-3-desktop is-4-tablet is-4-mobile">
+                                    <input class="control" type="text" name="username" placeholder="Email Address">
+                                    <input class="control" type="password" name="password" placeholder="Password">
+                                    <input class="button is-danger is-light my-3" type="submit" name="login" value="login">
+                                </div>
+                            </div>
+                        </form>
+                      </p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}

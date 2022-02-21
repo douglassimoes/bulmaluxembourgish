@@ -4,6 +4,39 @@
 
 {% block content %}
 
-
+<section class="section">
+    <div class="container">
+        <div class="rows">
+            <div class="row">
+                <article class="panel is-info">
+                    <p class="panel-heading">
+                      Signup
+                    </p>
+                    <div class="panel-block">
+                        <form class="form-container" action="" method="POST">
+                            {% csrf_token %}
+                            <div class="columns is-mobile">
+                                <div class="column my-1 is-4-desktop is-4-tablet is-4-mobile">
+                                    <p class="has-text-weight-bold"> Username:
+                                    <p class="has-text-weight-bold"> Email Address: </p>
+                                    <p class="has-text-weight-bold my-1"> Password: </p> 
+                                    <p class="has-text-weight-bold my-1"> Confirm Password: </p> 
+                                </div>
+                                <div class="column is-3-desktop is-4-tablet is-4-mobile">
+                                    <input class="control" type="text" name="username" placeholder="Username">
+                                    <input class="control" type="text" name="email" placeholder="Email Address">
+                                    <input class="control" type="password" name="password1" placeholder="Password">
+                                    <input class="control" type="password" name="password2" placeholder="Confirm Password">
+                                    <input class="button is-info is-light my-3" type="submit" name="signup" value="signup">
+                                </div>
+                            </div>
+                        </form>
+                      </p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}
