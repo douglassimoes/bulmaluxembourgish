@@ -6,6 +6,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from languagelessons import models
+from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 
@@ -48,8 +49,30 @@ def dashboard(request):
 
 @login_required
 def importlesson(request):
+    if request.method == "POST":
+        print(request.POST.keys())
+        # if the post request has a file under the input name 'audiofile', then save the file.
+        print(request.FILES)
+        audio_file = request.FILES['audiofile'] if 'audiofile' in request.FILES else None
+        if audio_file:
+                # save attached file
+                print("saving attached file")
+                # create a new instance of FileSystemStorage
+                fs = FileSystemStorage()
+                file = fs.save(audio_file.name, audio_file)
+                # the fileurl variable now contains the url to the file. This can be used to serve the file when needed.
+                fileurl = fs.url(file)
+                title = request.POST.get('lesson_title')
+                page = 1
+                content = request.POST.get('lesson_text')
+                level = "A1"
+                audio = file
+                lesson = models.Lesson(title=title,page=page,content=content,level=level,audio=audio)
+                lesson.save()
     return render(request,"languagelessons/importlesson.html",{})
 
 # @login_required
-def lesson(request):
-    return render(request,"languagelessons/lesson.html",{})
+def lessons(request):
+    lessonlist = models.Lesson.objects.filter()
+    print(lessonlist)
+    return render(request,"languagelessons/lessons.html",{"lessons": lessonlist})

@@ -1,0 +1,55 @@
+{% extends 'languagelessons/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<section class="section">
+    <div class="container">
+        <div class="rows">
+            <div class="row">
+                <div class="columns">
+                    <div class="column">
+                        <div class="navbar has-text-light has-background-grey-lighter" id="nav-lesson">
+                            <div class="navbar-start">
+                                <a class="navbar-item">Audio</a>
+                                <a class="navbar-item">Lesson Parts</a>
+                            </div>
+                            <div class="navbar-end">
+                                <a class="navbar-item">Review</a>
+                                <a class="navbar-item">Settings</a> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="columns pl-3 pr-3 is-multiline">
+                    {% for lesson in lessons %} 
+                        <div class="column is-8-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-ter" style="min-height: 200px;" onclick='location.href="lesson{{lesson.id}}";'>
+                            <h1 class="title is-large"> {{ lesson.title }} </h1>
+                            
+                        </div>
+                        <div class="column is-4-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-bis" style="min-height: 200px;">
+                            <h1 class="title is-medium"> Meaning </h1>
+                            <div class="row">
+                                <div class="columns is-mobile">
+                                    <div class="column is-narrow">
+                                        <p class="has-text-weight-bold"> New Words: <a class="">placeholder</a></p> 
+                                        <p class="has-text-weight-bold"> Words Marked: </p>
+                                    </div>
+                                    <div class="column is-narrow is-centered">
+                                        <input class="button is-info is-small" type="submit" value="Audio1">
+                                        <input class="button is-info is-small" type="submit" value="Audio2">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

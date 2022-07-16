@@ -8,60 +8,63 @@
 <section class="section">
     <div class="container">
         <div class="rows">
-            <div class="row">
-                <div class="columns">
-                    <div class="column">
-                        <div class="navbar has-text-light has-background-grey-lighter" id="nav-lesson">
-                            <div class="navbar-start">
-                                <div class="select is-medium mt-1 ml-1 mb-1">
-                                    <select>
-                                        <option>Choose Level:</option>
-                                        <option>Beginner1</option>
-                                        <option>Beginner2</option>
-                                        <option>Intermediate1</option>
-                                        <option>Intermediate2</option>
-                                        <option>Advanced1</option>
-                                        <option>Advanced2</option>
-                                      </select>
-                                </div>
-                                <div class="select is-medium mt-1 ml-1 mb-1">
-                                    <select id="selectCourse" onChange="chooseCourse()">
-                                        <option>Choose Course:</option>
-                                        <option value="Course1">Course 1</option>
-                                        <option value="Course2">Course 2</option>
-                                        <option value="NewCourse">New Course</option>
-                                      </select>
+            <form class="form-container" action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="columns">
+                        <div class="column">
+                            <div class="navbar has-text-light has-background-grey-lighter" id="nav-lesson">
+                                <div class="navbar-start">
+                                    <div class="select is-medium mt-1 ml-1 mb-1">
+                                        <select>
+                                            <option>Choose Level:</option>
+                                            <option>A1</option>
+                                            <option>A2</option>
+                                            <option>B1</option>
+                                            <option>B2</option>
+                                            <option>C1</option>
+                                            <option>C2</option>
+                                        </select>
+                                    </div>
+                                    <div class="select is-medium mt-1 ml-1 mb-1">
+                                        <select id="selectCourse" onChange="chooseCourse()">
+                                            <option>Choose Course:</option>
+                                            <option value="Course1">Course 1</option>
+                                            <option value="Course2">Course 2</option>
+                                            <option value="NewCourse">New Course</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>    
-            <div class="row">
-                <div class="columns pl-3 pr-3 is-multiline">
-                    <div class="column is-8-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-ter" id="leftColumn" style="min-height: 200px;">
-                        <input class="input is-medium" type="text" placeholder="Type Lesson Title:"> </input>
-                        <textarea class="textarea" placeholder="10 lines of textarea" rows="10"></textarea>
-                    </div>
-                    <div class="column is-4-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-bis" style="min-height: 200px;">
-                        <h1 class="title is-medium"> Audio </h1>
-                        <div class="row">
-                            <div class="file is-danger has-name">
-                                <label class="file-label">
-                                  <input class="file-input" type="file" name="resume">
-                                  <span class="file-cta">
-                                    <span class="file-label"> Audio file… </span>
-                                  </span>
-                                  <span class="file-name">
-                                    lesson_audio_file.mp3
-                                  </span>
-                                </label>
+                </div>    
+                <div class="row">
+                    <div class="columns pl-3 pr-3 is-multiline">
+                        <div class="column is-8-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-ter" id="leftColumn" style="min-height: 200px;">
+                            <input class="input is-medium" type="text" name="lesson_title" placeholder="Type Lesson Title:"> </input>
+                            <textarea class="textarea" name="lesson_text" placeholder="10 lines of textarea" rows="10"></textarea>
+                        </div>
+                        <div class="column is-4-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-bis" style="min-height: 200px;">
+                            <h1 class="title is-medium"> Audio </h1>
+                            <div class="row">
+                                <div class="file is-danger has-name">
+                                    <label class="file-label">
+                                    <input class="file-input" type="file" name="audiofile">
+                                    <span class="file-cta">
+                                        <span class="file-label"> Audio file… </span>
+                                    </span>
+                                    <span class="file-name">
+                                        lesson_audio_file.mp3
+                                    </span>
+                                    </label>
+                                </div>
+                                <input class="button is-info my-3" type="submit" name="save" value="Save Lesson">
                             </div>
-                            <input class="button is-info my-3" type="submit" name="save" value="Save Lesson">
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </section>

@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.files.storage import FileSystemStorage
+from django.conf.urls.static import static
+from django.conf import settings
 
 class Word(models.Model):
 
@@ -44,8 +47,10 @@ class Lesson(models.Model):
         advanced2 = "C2"
 
     title = models.CharField(max_length=200, default="No title")
-    content = models.CharField(max_length=1000, default="No content")
+    page = models.PositiveIntegerField(default=1)
+    content = models.CharField(max_length=2200, default="No content")
     level = models.CharField(max_length=254,choices=LessonLevel.choices, default="A1")
+    audio = models.FileField(storage=FileSystemStorage(location=settings.MEDIA_ROOT), upload_to='media',default="lesson01.m4a")
 
 
 class Course(models.Model):
