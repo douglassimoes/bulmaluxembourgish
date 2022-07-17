@@ -66,8 +66,19 @@
         var word_placeholder = document.getElementById("word_clicked")
         var meaning_placeholder = document.getElementById("google_meaning")
 
+        document.domain = "bulmaluxembougish.com";
+
+        let xhr = new XMLHttpRequest();
+        var url_first_part = "https://lod.lu/api/lb/search?query="
+        var url_second_part = "&lang=lb" 
+        xhr.open("GET", url_first_part.concat(word,url_second_part),true);
+
+        xhr.send();
+
         word_placeholder.textContent = "Word: "
-        word_placeholder.textContent = word_placeholder.textContent + word 
+        xhr.onload = () => console.log(xhr.responseText)
+        
+        word_placeholder.textContent = word_placeholder.textContent + xhr.responseText
     }
     </script>
 
