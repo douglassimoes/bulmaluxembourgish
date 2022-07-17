@@ -6,6 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from django.conf.urls.static import static
 from django.conf import settings
 
+
 class Word(models.Model):
 
     class WordFamiliarity(models.TextChoices):
@@ -20,6 +21,10 @@ class Word(models.Model):
     word_tag = models.CharField(max_length=200, default="")
     familiarity = models.CharField(max_length=254,choices=WordFamiliarity.choices, default="1")
     last_review = models.DateTimeField()
+
+class Sentence(models.Model):
+    words_id = models.ForeignKey(Word, on_delete = models.CASCADE)
+    audio = models.URLField(max_length = 200, default="")
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -48,7 +53,8 @@ class Lesson(models.Model):
 
     title = models.CharField(max_length=200, default="No title")
     page = models.PositiveIntegerField(default=1)
-    content = models.CharField(max_length=2200, default="No content")
+    preview = models.CharField(max_length=1000, default="No preview")
+    content = models.CharField(max_length=3000, default="No content")
     level = models.CharField(max_length=254,choices=LessonLevel.choices, default="A1")
     audio = models.FileField(storage=FileSystemStorage(location=settings.MEDIA_ROOT), upload_to='media',default="lesson01.m4a")
 

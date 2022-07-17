@@ -64,15 +64,22 @@ def importlesson(request):
                 fileurl = fs.url(file)
                 title = request.POST.get('lesson_title')
                 page = 1
+                preview = request.POST.get('lesson_text')[0:100]
                 content = request.POST.get('lesson_text')
                 level = "A1"
                 audio = file
-                lesson = models.Lesson(title=title,page=page,content=content,level=level,audio=audio)
+                lesson = models.Lesson(title=title,page=page,preview=preview,content=content,level=level,audio=audio)
                 lesson.save()
     return render(request,"languagelessons/importlesson.html",{})
 
-# @login_required
+@login_required
 def lessons(request):
     lessonlist = models.Lesson.objects.filter()
     print(lessonlist)
     return render(request,"languagelessons/lessons.html",{"lessons": lessonlist})
+
+@login_required
+def lesson(request, pk):
+    lesson = models.Lesson.objects.get(pk=pk)
+    lesson_words = lesson.content.split(" ")
+    return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": lesson_words})

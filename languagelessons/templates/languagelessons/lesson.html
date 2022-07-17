@@ -26,26 +26,33 @@
             <div class="row">
                 <div class="columns pl-3 pr-3 is-multiline">
                     <div class="column is-8-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-ter" style="min-height: 200px;">
-                        <h1 class="title is-large"> Lesson Title </h1>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti expedita et iusto voluptatem maxime dignissimos nesciunt earum mollitia praesentium quam sequi maiores vel, facere recusandae dolor, quibusdam quaerat unde culpa!
+                        <h1 class="title is-large"> {{ lesson.title }} </h1>
+                        <div class="columns is-multiline">
+                            {% for word in lesson_words %}
+                                <div class="column" onclick="translateWord('{{ word }}')">{{ word }}</div>
+                            {% endfor %}
+                        </div>
                     </div>
                     <div class="column is-4-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-bis" style="min-height: 200px;">
                         <h1 class="title is-medium"> Meaning </h1>
                         <div class="row">
                             <div class="columns is-mobile">
                                 <div class="column is-narrow">
-                                    <p class="has-text-weight-bold"> Word: <a class="">placeholder</a></p> 
-                                    <p class="has-text-weight-bold"> Meaning Note: </p>
+                                    <p class="has-text-weight-bold" id="word_clicked"> Word: </p> 
+                                    <p class="has-text-weight-bold" id="google_meaning"> Meaning: </p>
                                     <p class="has-text-weight-bold"> Community Meaning1: </p> 
                                     <p class="has-text-weight-bold"> Community Meaning2: </p> 
                                     <p class="has-text-weight-bold"> Community Meaning3: </p> 
                                     <p class="has-text-weight-bold"> Dictionary Meaning: </p> 
                                 </div>
                                 <div class="column is-narrow is-centered">
-                                    <input class="button is-info is-small" type="submit" value="Audio1">
-                                    <input class="button is-info is-small" type="submit" value="Audio2">
                                 </div>
                             </div>
+                        </div>
+                        <div class="row" style="padding-top:50px; position: fixed;">
+                            <audio controls>
+                                <source src="{{ lesson.audio.url }}" type="audio/mpeg">
+                            </audio>
                         </div>
                     </div>
                 </div>
@@ -53,5 +60,15 @@
         </div>
     </div>
 </div>
+
+<script>
+    function translateWord(word){
+        var word_placeholder = document.getElementById("word_clicked")
+        var meaning_placeholder = document.getElementById("google_meaning")
+
+        word_placeholder.textContent = "Word: "
+        word_placeholder.textContent = word_placeholder.textContent + word 
+    }
+    </script>
 
 {% endblock %}

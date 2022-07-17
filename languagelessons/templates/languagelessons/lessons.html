@@ -26,12 +26,15 @@
             <div class="row">
                 <div class="columns pl-3 pr-3 is-multiline">
                     {% for lesson in lessons %} 
-                        <div class="column is-8-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-ter" style="min-height: 200px;" onclick='location.href="lesson{{lesson.id}}";'>
+                        <div class="column is-8-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-ter" style="min-height: 200px;">
                             <h1 class="title is-large"> {{ lesson.title }} </h1>
-                            
+                            {{ lesson.preview }}
+                            <div class="row" style="padding-top: 15px;">
+                                <a href="{% url 'lesson' lesson.pk %}"' type="submit" name="save">Go to lesson</a>
+                            </div>
                         </div>
                         <div class="column is-4-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-bis" style="min-height: 200px;">
-                            <h1 class="title is-medium"> Meaning </h1>
+                            <h1 class="title is-medium"> Status </h1>
                             <div class="row">
                                 <div class="columns is-mobile">
                                     <div class="column is-narrow">
