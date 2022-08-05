@@ -15,13 +15,14 @@ import unicodedata
 def home(request):
     if request.method == 'POST':
         print(request.POST.keys())
-        if request.POST.get("login"):
-            redirect('login')
+        if 'login' in request.POST.keys():
+            print('redirect to login')
+            return redirect('login_view')
         else:
-            redirect('signup')
+            return redirect('signup_view')
     return render(request,"languagelessons/home.html",{})
 
-def signup(request):
+def signup_view(request):
     if request.method == 'POST':
         print(request.POST.keys())
         form = UserCreationForm(request.POST)
