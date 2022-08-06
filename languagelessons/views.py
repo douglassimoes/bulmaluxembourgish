@@ -84,8 +84,15 @@ def lessons(request):
 @login_required
 def lesson(request, pk):
     lesson = models.Lesson.objects.get(pk=pk)
-    normalized_content = unicodedata.normalize("NFKD", lesson.content)
-    lesson_words = normalized_content.split(" ")
+    lesson_normalized_content = unicodedata.normalize("NFKD", lesson.content)
+    translation_normalized_content = unicodedata.normalize("NFKD", lesson.content_en)
+    audio_normalized_content = unicodedata.normalize("NFKD", lesson.content_timestamps)
+    delimiter = "."
+    lesson_phrases = [x+delimiter for x in lesson_normalized_content.split(delimiter) if x]
+    lesson_words = lesson_normalized_content.split(" ")
+    translation_phrases = [x+delimiter for x in translation_normalized_content.split(delimiter) if x]
+    phrase_id = [ i for i in range(len(lesson_phrases))]
+    audio_timestamps = audio_normalized_content.split(";")
     new_words = []
     for word in lesson_words:
         if "\n" in word:
@@ -103,20 +110,21 @@ def lesson(request, pk):
 
     my_translations = dict(zip(lux_terms, google_translation))
     
-    for word in new_words:
-        word = word.replace(".","").replace(",","").replace("\r\n","").replace("?","")
-        print("\'{}\'".format(word),end='= ')
-        if word not in exceptions:
-            url = "https://lod.lu/api/lb/entry/"+word.strip().upper()+"1"
-            print(url)
-            response = requests.get(url)
-            if 'entry' in response.json() and 'grammaticalUnits' in response.json()['entry']['microStructures'][0].keys():
-                print(response.json()['entry']['microStructures'][0]['grammaticalUnits'][0]['meanings'][0]['targetLanguages']['pt']['parts'][0]['content'])
-            else:
-                if word in my_translations.keys():
-                    print(my_translations[word])
-                else:
-                    exception_list.append(word)
+    # for word in new_words:
+    #     word = word.replace(".","").replace(",","").replace("\r\n","").replace("?","")
+    #     print("\'{}\'".format(word),end='= ')
+    #     if word not in exceptions:
+    #         url = "https://lod.lu/api/lb/entry/"+word.strip().upper()+"1"
+    #         print(url)
+    #         response = requests.get(url)
+    #         if 'entry' in response.json() and 'grammaticalUnits' in response.json()['entry']['microStructures'][0].keys():
+    #             print(response.json()['entry']['microStructures'][0]['grammaticalUnits'][0]['meanings'][0]['targetLanguages']['pt']['parts'][0]['content'])
+    #         else:
+    #             if word in my_translations.keys():
+    #                 print(my_translations[word])
+    #             else:
+    #                 exception_list.append(word)
 
+    lesson_translation = zip(lesson_phrases,translation_phrases,phrase_id,audio_timestamps)
     print("exceptions: {}, {} words".format(set(exception_list),len(set(exception_list))))
-    return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": new_words})
+    return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": new_words, "lesson_phrases": lesson_phrases, "lesson_translation":lesson_translation})

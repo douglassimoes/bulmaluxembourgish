@@ -55,6 +55,8 @@ class Lesson(models.Model):
     page = models.PositiveIntegerField(default=1)
     preview = models.CharField(max_length=1000, default="No preview")
     content = models.CharField(max_length=3000, default="No content")
+    content_en = models.CharField(max_length=3000, default="No content")
+    content_timestamps = models.CharField(max_length=3000, default="No content")
     level = models.CharField(max_length=254,choices=LessonLevel.choices, default="A1")
     audio = models.FileField(storage=FileSystemStorage(location=settings.MEDIA_ROOT), upload_to='media',default="lesson01.m4a")
 

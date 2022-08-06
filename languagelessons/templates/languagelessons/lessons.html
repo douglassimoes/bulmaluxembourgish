@@ -30,7 +30,7 @@
                             <h1 class="title is-large"> {{ lesson.title }} </h1>
                             {{ lesson.preview }}
                             <div class="row" style="padding-top: 15px;">
-                                <a href="{% url 'lesson' lesson.pk %}"' type="submit" name="save">Go to lesson</a>
+                                <a class="button is-info is-small" href="{% url 'lesson' lesson.pk %}"' type="submit" name="save">Go to lesson</a>
                             </div>
                         </div>
                         <div class="column is-4-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-bis" style="min-height: 200px;">
@@ -41,10 +41,10 @@
                                         <p class="has-text-weight-bold"> New Words: <a class="">placeholder</a></p> 
                                         <p class="has-text-weight-bold"> Words Marked: </p>
                                     </div>
-                                    <div class="column is-narrow is-centered">
+                                    <!-- <div class="column is-narrow is-centered">
                                         <input class="button is-info is-small" type="submit" value="Audio1">
-                                        <input class="button is-info is-small" type="submit" value="Audio2">
-                                    </div>
+                                        <input class="button is-info is-small" type="submit" value="Audio2"> -->
+                                    <!-- </div> -->
                                 </div>
                             </div>
                         </div>
