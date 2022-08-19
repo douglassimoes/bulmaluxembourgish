@@ -67,11 +67,14 @@ def importlesson(request):
                 fileurl = fs.url(file)
                 title = request.POST.get('lesson_title')
                 page = 1
-                preview = request.POST.get('lesson_text')[0:100]
-                content = request.POST.get('lesson_text')
+                preview = request.POST.get('lesson_text_lu')[0:100]
+                content_lu = request.POST.get('lesson_text_lu')
+                content_pt = request.POST.get('lesson_text_pt')
+                content_en = request.POST.get('lesson_text_en')
+                content_fr = request.POST.get('lesson_text_fr')
                 level = "A1"
                 audio = file
-                lesson = models.Lesson(title=title,page=page,preview=preview,content=content,level=level,audio=audio)
+                lesson = models.Lesson(title=title,page=page,preview=preview,content_lu=content_lu,content_pt=content_pt,content_en=content_en,content_fr=content_fr,level=level,audio=audio)
                 lesson.save()
     return render(request,"languagelessons/importlesson.html",{})
 
@@ -84,13 +87,21 @@ def lessons(request):
 @login_required
 def lesson(request, pk):
     lesson = models.Lesson.objects.get(pk=pk)
-    lesson_normalized_content = unicodedata.normalize("NFKD", lesson.content)
-    translation_normalized_content = unicodedata.normalize("NFKD", lesson.content_en)
+    lesson_normalized_content = unicodedata.normalize("NFKD", lesson.content_lu)
     audio_normalized_content = unicodedata.normalize("NFKD", lesson.content_timestamps)
+
     delimiter = "."
+
+    translation_pt_normalized_content = unicodedata.normalize("NFKD", lesson.content_pt)
+    translation_en_normalized_content = unicodedata.normalize("NFKD", lesson.content_en)
+    translation_fr_normalized_content = unicodedata.normalize("NFKD", lesson.content_fr)
+    translation_pt_phrases = [x+delimiter for x in translation_pt_normalized_content.split(delimiter) if x]
+    translation_en_phrases = [x+delimiter for x in translation_en_normalized_content.split(delimiter) if x]
+    translation_fr_phrases = [x+delimiter for x in translation_fr_normalized_content.split(delimiter) if x]
+
+
     lesson_phrases = [x+delimiter for x in lesson_normalized_content.split(delimiter) if x]
     lesson_words = lesson_normalized_content.split(" ")
-    translation_phrases = [x+delimiter for x in translation_normalized_content.split(delimiter) if x]
     phrase_id = [ i for i in range(len(lesson_phrases))]
     audio_timestamps = audio_normalized_content.split(";")
     new_words = []
@@ -125,6 +136,6 @@ def lesson(request, pk):
     #             else:
     #                 exception_list.append(word)
 
-    lesson_translation = zip(lesson_phrases,translation_phrases,phrase_id,audio_timestamps)
+    lesson_translation = zip(lesson_phrases,translation_pt_phrases,translation_en_phrases,translation_fr_phrases,phrase_id,audio_timestamps)
     print("exceptions: {}, {} words".format(set(exception_list),len(set(exception_list))))
     return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": new_words, "lesson_phrases": lesson_phrases, "lesson_translation":lesson_translation})

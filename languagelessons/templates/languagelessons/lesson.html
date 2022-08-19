@@ -15,12 +15,14 @@
                     <div class="column">
                         <div class="navbar has-text-light has-background-grey-lighter" id="nav-lesson">
                             <div class="navbar-start">
-                                <a class="navbar-item">Audio</a>
-                                <a class="navbar-item">Lesson Parts</a>
-                            </div>
-                            <div class="navbar-end">
-                                <a class="navbar-item">Review</a>
-                                <a class="navbar-item">Settings</a> 
+                                <a class="navbar-item">Translates from Luxembourgish to:</a>
+                                <div class="select is-medium mt-1 ml-1 mb-1">
+                                    <select id="selectTranslation">
+                                        <option value="English">English</option>
+                                        <option value="Portugese">Portugese</option>
+                                        <option value="French">French</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -31,7 +33,7 @@
                     <div class="column is-8-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-ter" style="min-height: 200px;">
                         <h1 class="title is-large"> {{ lesson.title }} </h1>
                         <div class="columns is-multiline">
-                            {% for phrase,translation,phrase_id,audio_timestamp in lesson_translation %}
+                            {% for phrase,translation_pt,translation_en,translation_fr,phrase_id,audio_timestamp in lesson_translation %}
                                 <div class="rows" style="width: 100%;">
                                     <div class="row" style="font-size: large;font-family: Arial; padding-bottom: 5px;background-color: #f5f5f5;" onmouseover="this.style.background='#14a2dd';" onmouseout="this.style.background='#f5f5f5';"onclick="translateAndPlaySentence({{ phrase_id }})">{{ phrase }} 
                                         <a class="button is-info is-small" id="play{{ phrase_id }}" onclick="playFromTimestamp('{{ phrase_id }}','{{ audio_timestamp }}')">
@@ -41,7 +43,16 @@
                                             <i class="fas fa-play"></i>
                                         </a>
                                     </div>
-                                    <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px;" id="{{ phrase_id }}">{{ translation }}</div>
+                                    {% if title == "Portugese" %}
+                                    <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px;" id="{{ phrase_id }}">{{ translation_pt }}</div>
+                                    {% endif %}
+                                    {% if title == "English" %}
+                                    <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px;" id="{{ phrase_id }}">{{ translation_en }}</div>
+                                    {% endif %}
+                                    {% if title == "French" %}
+                                    <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px;" id="{{ phrase_id }}">{{ translation_fr }}</div>
+                                    {% endif %}
+
                                     <!-- <div class="column" onclick="translateWord('{{ word }}')">{{ word }}</div> -->
                                 </div>
                             {% endfor %}
