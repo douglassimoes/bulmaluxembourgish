@@ -8,19 +8,9 @@ from django.conf import settings
 
 
 class Word(models.Model):
-
-    class WordFamiliarity(models.TextChoices):
-        new = "1"
-        seen = "2"
-        familiar = "3"
-        known = "4"
-
     word_name = models.CharField(max_length=200, default="")
     word_meaning = models.CharField(max_length=200, default="")
-    word_note = models.CharField(max_length=200, default="")
     word_tag = models.CharField(max_length=200, default="")
-    familiarity = models.CharField(max_length=254,choices=WordFamiliarity.choices, default="1")
-    last_review = models.DateTimeField()
 
 class Sentence(models.Model):
     words_id = models.ForeignKey(Word, on_delete = models.CASCADE)

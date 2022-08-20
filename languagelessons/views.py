@@ -133,20 +133,21 @@ def lesson(request, pk):
 
     my_translations = dict(zip(lux_terms, google_translation))
     
-    # for word in new_words:
-    #     word = word.replace(".","").replace(",","").replace("\r\n","").replace("?","")
-    #     print("\'{}\'".format(word),end='= ')
-    #     if word not in exceptions:
-    #         url = "https://lod.lu/api/lb/entry/"+word.strip().upper()+"1"
-    #         print(url)
-    #         response = requests.get(url)
-    #         if 'entry' in response.json() and 'grammaticalUnits' in response.json()['entry']['microStructures'][0].keys():
-    #             print(response.json()['entry']['microStructures'][0]['grammaticalUnits'][0]['meanings'][0]['targetLanguages']['pt']['parts'][0]['content'])
-    #         else:
-    #             if word in my_translations.keys():
-    #                 print(my_translations[word])
-    #             else:
-    #                 exception_list.append(word)
+    for word in new_words:
+        word = word.replace(".","").replace(",","").replace("\r\n","").replace("?","")
+        print("\'{}\'".format(word),end='= ')
+        models.Word.objects.get(word_name=word)
+        if word not in exceptions:
+            url = "https://lod.lu/api/lb/entry/"+word.strip().upper()+"1"
+            print(url)
+            response = requests.get(url)
+            if 'entry' in response.json() and 'grammaticalUnits' in response.json()['entry']['microStructures'][0].keys():
+                print(response.json()['entry']['microStructures'][0]['grammaticalUnits'][0]['meanings'][0]['targetLanguages']['pt']['parts'][0]['content'])
+            else:
+                if word in my_translations.keys():
+                    print(my_translations[word])
+                else:
+                    exception_list.append(word)
 
     lesson_translation = zip(lesson_phrases,phrase_id,translation_pt_phrases,translation_en_phrases,translation_fr_phrases,audio_timestamps)
     print("exceptions: {}, {} words".format(set(exception_list),len(set(exception_list))))
