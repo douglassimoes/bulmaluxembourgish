@@ -85,8 +85,20 @@ def lessons(request):
     return render(request,"languagelessons/lessons.html",{"lessons": lessonlist})
 
 @login_required
+def profile(request):
+    user = User.objects.get(pk=request.user.pk)
+    profile = models.Profile.objects.get(user_id=request.user.pk)
+    if request.method == 'POST':
+        print(request.POST.keys())
+        profile.translation_preference = request.POST.getlist("new_translation_preference")[0]
+        profile.save()
+        return render(request,"languagelessons/profile.html",{"user_data": user, "user_profile": profile})
+    return render(request,"languagelessons/profile.html",{"user_data": user, "user_profile": profile})
+
+@login_required
 def lesson(request, pk):
     lesson = models.Lesson.objects.get(pk=pk)
+    profile = models.Profile.objects.get(user_id=request.user.pk)
     lesson_normalized_content = unicodedata.normalize("NFKD", lesson.content_lu)
     audio_normalized_content = unicodedata.normalize("NFKD", lesson.content_timestamps)
 
@@ -136,6 +148,6 @@ def lesson(request, pk):
     #             else:
     #                 exception_list.append(word)
 
-    lesson_translation = zip(lesson_phrases,translation_pt_phrases,translation_en_phrases,translation_fr_phrases,phrase_id,audio_timestamps)
+    lesson_translation = zip(lesson_phrases,phrase_id,translation_pt_phrases,translation_en_phrases,translation_fr_phrases,audio_timestamps)
     print("exceptions: {}, {} words".format(set(exception_list),len(set(exception_list))))
-    return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": new_words, "lesson_phrases": lesson_phrases, "lesson_translation":lesson_translation})
+    return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": new_words, "lesson_phrases": lesson_phrases, "lesson_translation":lesson_translation,"user_profile": profile})

@@ -7,6 +7,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login_view'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('lessons/', views.lessons, name='lessons'),
+    path('profile/', views.profile, name='profile'),
     path('<int:pk>', views.lesson, name="lesson"),
     path('importlesson/', views.importlesson, name='importlesson')
 ]

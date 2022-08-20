@@ -27,9 +27,16 @@ class Sentence(models.Model):
     audio = models.URLField(max_length = 200, default="")
 
 class Profile(models.Model):
+
+    class TranslationPreference(models.TextChoices):
+        portugese = "Portugese"
+        english = "English"
+        french = "French"
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     words_id = models.ForeignKey(Word, on_delete = models.CASCADE, blank=True, null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
+    translation_preference = models.CharField(max_length=254,choices=TranslationPreference.choices, default="English")
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
