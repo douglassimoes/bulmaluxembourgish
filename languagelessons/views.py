@@ -113,8 +113,15 @@ def lesson(request, pk):
 
 
     lesson_phrases = [x+delimiter for x in lesson_normalized_content.split(delimiter) if x]
-    lesson_words = lesson_normalized_content.split(" ")
     phrase_id = [ i for i in range(len(lesson_phrases))]
+    
+    lesson_phrases_words = []
+    for lesson_phrase_id,lesson_phrase in zip(phrase_id,lesson_phrases):
+        lesson_phrase = lesson_phrase.replace(".","").replace(",","").replace("\n"," ").replace("?","")
+        lesson_phrases_words.append(lesson_phrase.split(" "))
+    print(lesson_phrases_words)
+
+    lesson_words = lesson_normalized_content.split(" ")
     audio_timestamps = audio_normalized_content.split(";")
     new_words = []
     for word in lesson_words:
@@ -127,28 +134,36 @@ def lesson(request, pk):
     exceptions = ["A)","B)",'D\'Jänni','Fred','1)','2)','3)','4)','5)','6)','7)','8)','1800','18','19','20','21','Kaffi']
     exception_list = []
 
+    translation_dict = { "English":"en", "Portuguese":"pt", "French":"fr"}
+
     lux_terms = ['Zänn', 'd‘Bett', 'hu', 'Hat', 'Fernseh', 'hire', 'hie', 'duscht', 'Wäscht', 'wäscht', 'zesumme', 'nach,', "d'Jänni", 'Jo,', 'Hie', 'geet', 'kuckt', 'liest', 'Eise', 'Geet', 'Liest', 'schléift', 'um', 'Froen:', 'Hire', 'Duscht', 'ësst', 'eise', "d'Bett", 'e', 'hinne', 'Nee,', 'an', 'Kuckt', 'liesen','Kaffi', 'erzielt', 'dee', 'Steet', 'D’Clienten', 'schwätzt', 'Drénkt', 'fänkt', 'eenzege', 'ka', 'schwätze', 'fiert', 'd’Clienten', 'sti', 'vum', 'drénke', 'Fänkt', 'kënnt', 'ënnerschiddleche', 'drop', 'fuere', 'd’Geschicht', 'ville', 'hallwer', 'steet', 'Clienten', '1', 'd’Cienten', 'verschiddene', 'drénkt', 'Fiert', 'Länner', 'd’Aarbecht', 'wann', 'begéinen', 'fir', 'd’Äntwerten', 'Misch', 'bereeden','zwou', 'Dëmmi', 'Huet', 'huet', 'Fligerticket', 'decidéiert', 'kee', 'am', 'Wochen', 'wëllt', 'Wëllt', 'd’Frankräich', 'An', 'D’Frankräich', 'soll', 'd’Vakanz', 'Schwätzt', 'Suen', 'wouhinner', 'Decidéiert', 'Wantervakanz',"d'Äntwerten", 'schaffe', "D'Enseignante", 'd‘Meedche', "d'Meedche", 'Schafft', 'd’Schoul', 'Ännchen', 'Heescht', "D'Ännchen", 'vu', "D'Meedche", "D'Meedchen", 'hir', 'Frënn', "d'Geschicht", "d'Enseignante", 'Hausaufgaben', 'D‘Léierpersonal', 'd’Enseignanten', 'léiere', "d'Ännchen", 'Jull', "d'Meedchen", 'heescht', 'Wëssenschafte', 'komme', 'Frëndin', 'schätzt', "d'Schoul","d\'Claire", 'mécht', 'D’Claire', 'Filmer', 'Mécht', 'd‘Claire', 'spillt', 'D‘Claire', 'deet', 'schreift', "D'Claire", 'spille', 'd’Claire', 'Claire', 'Hausaufgabe', 'Spillt', 'Deet']
 
     google_translation = ['Teeth', 'the bed', 'hu', 'hat', 'television', 'hire', 'he', 'shower', 'wash', 'wash', 'together', 'after, ', "the Jänni",' Yes, ',' He ',' goes ',' looks ',' reads ',' Iron ',' Goes ',' Reads ',' sleeps ',' around ',' Questions: ',' Hire ',' Shower ',' eat ',' our ',' the bed ',' e ',' them ',' no, ',' and ',' look ','read','coffee','tells', 'he', 'stands', 'customers', 'speaks', 'drinks', 'starts', 'single', 'can', 'talk', 'drives', 'd\'Clients ',' stand ',' from ',' drink ',' start ',' come ',' different ',' drop ',' drive ',' history ',' many ',' half ',' stands', 'customers',' 1 ',' customers', 'different', 'drinks',' drives', 'countries',' work ',' when ',' meet ',' for ' , 'the answers', 'mix', 'prepare','two', 'stupid', 'did', 'did', 'plane ticket', 'decided', 'none', 'in', 'weeks', 'want', 'want', 'France' , 'In', 'France', 'should', 'holiday', 'talk', 'money', 'where', 'decided', 'winter holiday', "the answers", 'work', 'the teacher', 'the girl', 'the girl', 'work', 'school', 'little girl', 'mean', 'D\'Ännchen', 'vu'," D'Meedche "," D'Meedchen ", 'hir', 'Friends',' Geschichte ',' d\'Enseignante ',' Homofusen ',' D\'Den Teacher ',' the teachers', 'learn', 'the little girl', 'you', 'the girl', 'mean', 'science', 'come', 'girlfriend', 'appreciate', 'school',"Claire", "does", "Claire", "films", "does", "Claire", "plays", "Claire", "hurts", "writes", " Claire "," play "," Claire "," Claire "," Homework "," Play "," Deet "]
 
     my_translations = dict(zip(lux_terms, google_translation))
     
-    for word in new_words:
-        word = word.replace(".","").replace(",","").replace("\r\n","").replace("?","")
-        print("\'{}\'".format(word),end='= ')
-        models.Word.objects.get(word_name=word)
-        if word not in exceptions:
-            url = "https://lod.lu/api/lb/entry/"+word.strip().upper()+"1"
-            print(url)
-            response = requests.get(url)
-            if 'entry' in response.json() and 'grammaticalUnits' in response.json()['entry']['microStructures'][0].keys():
-                print(response.json()['entry']['microStructures'][0]['grammaticalUnits'][0]['meanings'][0]['targetLanguages']['pt']['parts'][0]['content'])
-            else:
-                if word in my_translations.keys():
-                    print(my_translations[word])
-                else:
-                    exception_list.append(word)
+    # for word in new_words:
+    #     word = word.replace(".","").replace(",","").replace("\r\n","").replace("?","")
+    #     # print("\'{}\'".format(word),end='= ')
 
-    lesson_translation = zip(lesson_phrases,phrase_id,translation_pt_phrases,translation_en_phrases,translation_fr_phrases,audio_timestamps)
+    #     if word not in exceptions:
+    #         url = "https://lod.lu/api/lb/entry/"+word.strip().upper()+"1"
+    #         # print(url)
+    #         response = requests.get(url)
+    #         if 'entry' in response.json() and 'grammaticalUnits' in response.json()['entry']['microStructures'][0].keys():
+    #             word_meaning = response.json()['entry']['microStructures'][0]['grammaticalUnits'][0]['meanings'][0]['targetLanguages'][translation_dict[profile.translation_preference]]['parts'][0]['content']
+    #             if not models.Word.objects.filter(word_name=word).exists():
+    #                 new_word = models.Word(word_name=word,word_meaning=word_meaning,meaning_reference=url)
+    #                 new_word.save()
+    #         else:
+    #             if word in my_translations.keys():
+    #                 word_meaning = my_translations[word]
+    #                 if not models.Word.objects.filter(word_name=word).exists():
+    #                     new_word = models.Word(word_name=word,word_meaning=word_meaning,meaning_reference=url)
+    #                     new_word.save()
+    #             else:
+    #                 exception_list.append(word)
+
+    lesson_translation = zip(lesson_phrases,phrase_id,lesson_phrases_words,translation_pt_phrases,translation_en_phrases,translation_fr_phrases,audio_timestamps)
     print("exceptions: {}, {} words".format(set(exception_list),len(set(exception_list))))
     return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": new_words, "lesson_phrases": lesson_phrases, "lesson_translation":lesson_translation,"user_profile": profile})

@@ -23,42 +23,45 @@
             </div>
             <div class="row">
                 <div class="columns pl-3 pr-3 is-multiline">
-                    <div class="column is-8-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-ter" style="min-height: 200px;">
+                    <div class="column is-9-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-ter" style="min-height: 200px;">
                         <h1 class="title is-large"> {{ lesson.title }} </h1>
                         <div class="columns is-multiline">
-                            {% for phrase,phrase_id,translation_pt,translation_en,translation_fr,audio_timestamp in lesson_translation %}
-
+                            {% for phrase,phrase_id,lesson_phrases_words,translation_pt,translation_en,translation_fr,audio_timestamp in lesson_translation %}
                                 <div class="rows" style="width: 100%;">
-                                    <div class="row" style="font-size: large;font-family: Arial; padding-bottom: 5px;background-color: #f5f5f5;" onmouseover="this.style.background='#14a2dd';" onmouseout="this.style.background='#f5f5f5';"onclick="translateAndPlaySentence({{ phrase_id }})">{{ phrase }} 
-                                        <a class="button is-info is-small" id="play{{ phrase_id }}" onclick="playFromTimestamp('{{ phrase_id }}','{{ audio_timestamp }}')">
-                                            <audio>
-                                                <source src="{{ lesson.audio.url }}" type="audio/mpeg">
-                                            </audio>
-                                            <i class="fas fa-play"></i>
-                                        </a>
+                                    <div class="row" style="font-size: large;font-family: Arial; padding-top: 5px;padding-bottom: 5px;background-color: #f5f5f5;" onmouseover="this.style.background='#14a2dd';" onmouseout="this.style.background='#f5f5f5';"onclick="translateAndPlaySentence({{ phrase_id }})">
+                                        <div class="columns">
+                                            {% for word in lesson_phrases_words %} 
+                                            &nbsp;<span style="margin-left: 8px;border-radius: 16px 50px;" onmouseover="this.style.background='#00a1de';" onmouseout="this.style.background='#f5f5f5';"onclick="translateAndPlayWord('{{ word }}')">{{ word }}&nbsp;</span>
+                                            {% endfor %}
+                                            <a class="button is-info is-small" id="play{{ phrase_id }}" onclick="playFromTimestamp('{{ phrase_id }}','{{ audio_timestamp }}')">
+                                                <audio>
+                                                    <source src="{{ lesson.audio.url }}" type="audio/mpeg">
+                                                </audio>
+                                                <i class="fas fa-play"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                     {% if user_profile.translation_preference == "Portugese" %}
-                                    <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px;" id="{{ phrase_id }}">{{ translation_pt }}</div>
+                                    <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px; margin-left: 20px;" id="{{ phrase_id }}">{{ translation_pt }}</div>
                                     {% endif %}
                                     {% if user_profile.translation_preference == "English" %}
-                                    <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px;" id="{{ phrase_id }}">{{ translation_en }}</div>
+                                    <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px; margin-left: 20px;" id="{{ phrase_id }}">{{ translation_en }}</div>
                                     {% endif %}
                                     {% if user_profile.translation_preference == "French" %}
-                                    <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px;" id="{{ phrase_id }}">{{ translation_fr }}</div>
+                                    <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px; margin-left: 20px;" id="{{ phrase_id }}">{{ translation_fr }}</div>
                                     {% endif %}
                                     <!-- <div class="column" onclick="translateWord('{{ word }}')">{{ word }}</div> -->
                                 </div>
-                                
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="column is-4-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-bis" style="min-height: 200px;">
+                    <div class="column is-3-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-bis" style="min-height: 200px;">
                         <h1 class="title is-medium"> Meaning </h1>
                         <div class="row">
                             <div class="columns is-mobile">
                                 <div class="column is-narrow">
                                     <p class="has-text-weight-bold" id="word_clicked"> Word: </p> 
-                                    <p class="has-text-weight-bold" id="google_meaning"> Meaning: </p>
+                                    <p class="has-text-weight-bold" id="word_clicked_meaning"> Meaning: </p>
                                     <p class="has-text-weight-bold"> Community Meaning1: </p> 
                                     <p class="has-text-weight-bold"> Community Meaning2: </p> 
                                     <p class="has-text-weight-bold"> Community Meaning3: </p> 
@@ -98,6 +101,14 @@
         xhr.onload = () => console.log(xhr.responseText)
         
         word_placeholder.textContent = word_placeholder.textContent + xhr.responseText
+    }
+
+    function translateAndPlayWord(word){
+        var word_clicked = document.getElementById("word_clicked");
+        var word_clicked_meaning = document.getElementById("word_clicked_meaning");
+
+        word_clicked.textContent = "Word: " + word;
+        // word_clicked_meaning.textContent = "Meaning: " + word;
     }
 
     function translateAndPlaySentence(phrase_id){
