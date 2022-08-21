@@ -119,7 +119,7 @@ def lesson(request, pk):
     for lesson_phrase_id,lesson_phrase in zip(phrase_id,lesson_phrases):
         lesson_phrase = lesson_phrase.replace(".","").replace(",","").replace("\n"," ").replace("?","")
         lesson_phrases_words.append(lesson_phrase.split(" "))
-    print(lesson_phrases_words)
+
 
     lesson_words = lesson_normalized_content.split(" ")
     audio_timestamps = audio_normalized_content.split(";")
@@ -164,6 +164,30 @@ def lesson(request, pk):
     #             else:
     #                 exception_list.append(word)
 
+    lesson_phrases_words_meanings = []
+    list_word_meanings = []
+    for list_words in lesson_phrases_words:
+        for word in list_words:
+            if models.Word.objects.filter(word_name=word).exists():
+                list_word_meanings.append(models.Word.objects.get(word_name=word).word_en_meaning)
+            else:
+                list_word_meanings.append("")
+        lesson_phrases_words_meanings.append(list_word_meanings)
+        list_word_meanings = []
+
+    audio_timestamps.extend(audio_timestamps)
+
+    # print(len(lesson_phrases))
+    # print(len(phrase_id))
+    # print(len(lesson_phrases_words))
+    # print(len(translation_pt_phrases))
+    # print(len(translation_en_phrases))
+    # print(len(translation_fr_phrases))
+    # print(len(audio_timestamps))
+
+    print(lesson_phrases_words_meanings)
+    lesson_phrases_words_translations = zip(lesson_phrases_words,lesson_phrases_words_meanings)
+
     lesson_translation = zip(lesson_phrases,phrase_id,lesson_phrases_words,translation_pt_phrases,translation_en_phrases,translation_fr_phrases,audio_timestamps)
     print("exceptions: {}, {} words".format(set(exception_list),len(set(exception_list))))
-    return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": new_words, "lesson_phrases": lesson_phrases, "lesson_translation":lesson_translation,"user_profile": profile})
+    return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": new_words, "lesson_phrases": lesson_phrases,"lesson_phrases_words_translations": lesson_phrases_words_translations, "lesson_translation":lesson_translation,"user_profile": profile})
