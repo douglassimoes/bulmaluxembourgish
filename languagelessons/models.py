@@ -12,6 +12,7 @@ class Word(models.Model):
     word_en_meaning = models.CharField(max_length=200, default="")
     word_pt_meaning = models.CharField(max_length=200, default="")
     word_fr_meaning = models.CharField(max_length=200, default="")
+    word_audio_reference = models.CharField(max_length=200, default="")
     meaning_reference = models.CharField(max_length=200, default="")
     word_tag = models.CharField(max_length=200, default="")
 

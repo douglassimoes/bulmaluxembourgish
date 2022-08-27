@@ -142,38 +142,47 @@ def lesson(request, pk):
 
     my_translations = dict(zip(lux_terms, google_translation))
     
-    # for word in new_words:
-    #     word = word.replace(".","").replace(",","").replace("\r\n","").replace("?","")
-    #     # print("\'{}\'".format(word),end='= ')
+    for word in new_words:
+        word = word.replace(".","").replace(",","").replace("\r\n","").replace("?","")
+        # print("\'{}\'".format(word),end='= ')
 
-    #     if word not in exceptions:
-    #         url = "https://lod.lu/api/lb/entry/"+word.strip().upper()+"1"
-    #         # print(url)
-    #         response = requests.get(url)
-    #         if 'entry' in response.json() and 'grammaticalUnits' in response.json()['entry']['microStructures'][0].keys():
-    #             word_meaning = response.json()['entry']['microStructures'][0]['grammaticalUnits'][0]['meanings'][0]['targetLanguages'][translation_dict[profile.translation_preference]]['parts'][0]['content']
-    #             if not models.Word.objects.filter(word_name=word).exists():
-    #                 new_word = models.Word(word_name=word,word_meaning=word_meaning,meaning_reference=url)
-    #                 new_word.save()
-    #         else:
-    #             if word in my_translations.keys():
-    #                 word_meaning = my_translations[word]
-    #                 if not models.Word.objects.filter(word_name=word).exists():
-    #                     new_word = models.Word(word_name=word,word_meaning=word_meaning,meaning_reference=url)
-    #                     new_word.save()
-    #             else:
-    #                 exception_list.append(word)
+        if word not in exceptions:
+            url = "https://lod.lu/api/lb/entry/"+word.strip().upper()+"1"
+            # print(url)
+            response = requests.get(url)
+            if 'entry' in response.json() and 'grammaticalUnits' in response.json()['entry']['microStructures'][0].keys():
+                word_meaning_en = response.json()['entry']['microStructures'][0]['grammaticalUnits'][0]['meanings'][0]['targetLanguages']['en']['parts'][0]['content']
+                word_meaning_fr = response.json()['entry']['microStructures'][0]['grammaticalUnits'][0]['meanings'][0]['targetLanguages']['fr']['parts'][0]['content']
+                word_meaning_pt = response.json()['entry']['microStructures'][0]['grammaticalUnits'][0]['meanings'][0]['targetLanguages']['pt']['parts'][0]['content']
+                word_audio_reference = response.json()['entry']['audioFiles']['aac']
+                # if not models.Word.objects.filter(word_name=word).exists():
+                new_word = models.Word(word_name=word,word_en_meaning=word_meaning_en,word_fr_meaning=word_meaning_fr,word_pt_meaning=word_meaning_pt,meaning_reference=url,word_audio_reference=word_audio_reference)
+                new_word.save()
+            else:
+                if word in my_translations.keys():
+                    empty_str = ""
+                    if not models.Word.objects.filter(word_name=word).exists():
+                        new_word = models.Word(word_name=word,word_en_meaning=empty_str,word_fr_meaning=empty_str,word_pt_meaning=empty_str,meaning_reference=empty_str,word_audio_reference=empty_str)
+                        new_word.save()
+                else:
+                    exception_list.append(word)
 
     lesson_phrases_words_meanings = []
-    list_word_meanings = []
+    word_meanings = []
     for list_words in lesson_phrases_words:
         for word in list_words:
             if models.Word.objects.filter(word_name=word).exists():
-                list_word_meanings.append(models.Word.objects.get(word_name=word).word_en_meaning)
+                word_db = models.Word.objects.filter(word_name=word)[0]
+                meaning = word_db.word_en_meaning
+                reference = word_db.meaning_reference
+                word_audio = word_db.word_audio_reference
             else:
-                list_word_meanings.append("")
-        lesson_phrases_words_meanings.append(list_word_meanings)
-        list_word_meanings = []
+                meaning = ""
+                reference = ""
+                word_audio = ""
+            word_meanings.append([word,meaning,reference,word_audio])
+        lesson_phrases_words_meanings.append(word_meanings)
+        word_meanings = []
 
     audio_timestamps.extend(audio_timestamps)
 
@@ -186,8 +195,7 @@ def lesson(request, pk):
     # print(len(audio_timestamps))
 
     print(lesson_phrases_words_meanings)
-    lesson_phrases_words_translations = zip(lesson_phrases_words,lesson_phrases_words_meanings)
 
-    lesson_translation = zip(lesson_phrases,phrase_id,lesson_phrases_words,translation_pt_phrases,translation_en_phrases,translation_fr_phrases,audio_timestamps)
+    lesson_translation = zip(lesson_phrases,phrase_id,lesson_phrases_words_meanings,translation_pt_phrases,translation_en_phrases,translation_fr_phrases,audio_timestamps)
     print("exceptions: {}, {} words".format(set(exception_list),len(set(exception_list))))
-    return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": new_words, "lesson_phrases": lesson_phrases,"lesson_phrases_words_translations": lesson_phrases_words_translations, "lesson_translation":lesson_translation,"user_profile": profile})
+    return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": new_words, "lesson_phrases": lesson_phrases,"lesson_phrases_words_meanings": lesson_phrases_words_meanings, "lesson_translation":lesson_translation,"user_profile": profile})
