@@ -15,42 +15,38 @@ import unicodedata
 def home(request):
     if request.method == 'POST':
         print(request.POST.keys())
-        if 'login' in request.POST.keys():
-            print('redirect to login')
-            return redirect('login_view')
-        else:
-            return redirect('signup_view')
+        response = redirect('lessons')
+        response.set_cookie('new_translation_preference',request.POST.get('new_translation_preference'))
+        return response
     return render(request,"languagelessons/home.html",{})
 
-def signup_view(request):
-    if request.method == 'POST':
-        print(request.POST.keys())
-        form = UserCreationForm(request.POST)
-        dir(form.data)
-        for field in form:
-            print("Field Error {} {}".format(field.name, field.errors))
-        if form.is_valid():
-            user = form.save()
-            post = request.POST
-            print("Form valid")
-            messages.success(request, f'Your account has been created. You can log in now!')
-            return redirect('login')    
-    return render(request,"languagelessons/signup.html",{})
+# def signup_view(request):
+#     if request.method == 'POST':
+#         print(request.POST.keys())
+#         form = UserCreationForm(request.POST)
+#         dir(form.data)
+#         for field in form:
+#             print("Field Error {} {}".format(field.name, field.errors))
+#         if form.is_valid():
+#             user = form.save()
+#             post = request.POST
+#             print("Form valid")
+#             messages.success(request, f'Your account has been created. You can log in now!')
+#             return redirect('login')    
+#     return render(request,"languagelessons/signup.html",{})
 
-def login_view(request):
-    if request.method == 'POST':
-        print(request.POST.keys())
-        user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
-        if user is not None:
-            login(request, user)
-            return redirect('dashboard')
-    return render(request,"languagelessons/login.html",{})
+# def login_view(request):
+#     if request.method == 'POST':
+#         print(request.POST.keys())
+#         user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
+#         if user is not None:
+#             login(request, user)
+#             return redirect('dashboard')
+#     return render(request,"languagelessons/login.html",{})
 
-@login_required
-def dashboard(request):
-    return render(request, 'languagelessons/dashboard.html',{"user_id": request.user.pk})
+# def dashboard(request):
+#     return render(request, 'languagelessons/dashboard.html',{"user_id": request.user.pk})
 
-@login_required
 def importlesson(request):
     if request.method == "POST":
         print(request.POST.keys())
@@ -78,27 +74,30 @@ def importlesson(request):
                 lesson.save()
     return render(request,"languagelessons/importlesson.html",{})
 
-@login_required
 def lessons(request):
     lessonlist = models.Lesson.objects.filter()
     print(lessonlist)
     return render(request,"languagelessons/lessons.html",{"lessons": lessonlist})
 
-@login_required
-def profile(request):
-    user = User.objects.get(pk=request.user.pk)
-    profile = models.Profile.objects.get(user_id=request.user.pk)
+# def profile(request):
+#     if request.method == 'POST':
+#         print(request.POST.keys())
+#         profile.translation_preference = request.POST.getlist("new_translation_preference")[0]
+#         profile.save()
+#         return render(request,"languagelessons/profile.html",{"user_data": user, "user_profile": profile})
+#     return render(request,"languagelessons/profile.html",{"user_data": user, "user_profile": profile})
+
+def change_translation(request):
     if request.method == 'POST':
         print(request.POST.keys())
-        profile.translation_preference = request.POST.getlist("new_translation_preference")[0]
-        profile.save()
-        return render(request,"languagelessons/profile.html",{"user_data": user, "user_profile": profile})
-    return render(request,"languagelessons/profile.html",{"user_data": user, "user_profile": profile})
+        response = redirect('lessons')
+        response.set_cookie('new_translation_preference',request.POST.get('new_translation_preference'))
+        return response
+    return render(request,"languagelessons/change_translation.html", {"translation_preference": request.COOKIES.get('new_translation_preference')})
 
-@login_required
 def lesson(request, pk):
     lesson = models.Lesson.objects.get(pk=pk)
-    profile = models.Profile.objects.get(user_id=request.user.pk)
+    print(request.COOKIES.get('new_translation_preference'))
     lesson_normalized_content = unicodedata.normalize("NFKD", lesson.content_lu)
     audio_normalized_content = unicodedata.normalize("NFKD", lesson.content_timestamps)
 
@@ -198,4 +197,4 @@ def lesson(request, pk):
 
     lesson_translation = zip(lesson_phrases,phrase_id,lesson_phrases_words_meanings,translation_pt_phrases,translation_en_phrases,translation_fr_phrases,audio_timestamps)
     print("exceptions: {}, {} words".format(set(exception_list),len(set(exception_list))))
-    return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": new_words, "lesson_phrases": lesson_phrases,"lesson_phrases_words_meanings": lesson_phrases_words_meanings, "lesson_translation":lesson_translation,"user_profile": profile})
+    return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": new_words, "lesson_phrases": lesson_phrases,"lesson_phrases_words_meanings": lesson_phrases_words_meanings, "lesson_translation":lesson_translation,"translation_preference": request.COOKIES.get('new_translation_preference')})

@@ -15,7 +15,7 @@
                     <div class="column">
                         <div class="navbar has-text-light has-background-grey-lighter" id="nav-lesson">
                             <div class="navbar-start">
-                                <a class="navbar-item">Translates from Luxembourgish to {{ user_profile.translation_preference }}</a>
+                                <a class="navbar-item">Translates from Luxembourgish to {{ translation_preference }}</a>
                             </div>
                         </div>
                     </div>
@@ -42,13 +42,13 @@
                                             </a>
                                         </div>
                                     </div>
-                                    {% if user_profile.translation_preference == "Portugese" %}
+                                    {% if translation_preference == "Portugese" %}
                                     <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px; margin-left: 20px;" id="{{ phrase_id }}">{{ translation_pt }}</div>
                                     {% endif %}
-                                    {% if user_profile.translation_preference == "English" %}
+                                    {% if translation_preference == "English" %}
                                     <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px; margin-left: 20px;" id="{{ phrase_id }}">{{ translation_en }}</div>
                                     {% endif %}
-                                    {% if user_profile.translation_preference == "French" %}
+                                    {% if translation_preference == "French" %}
                                     <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px; margin-left: 20px;" id="{{ phrase_id }}">{{ translation_fr }}</div>
                                     {% endif %}
                                     <!-- <div class="column" onclick="translateWord('{{ word }}')">{{ word }}</div> -->

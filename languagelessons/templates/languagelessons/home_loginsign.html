@@ -1,0 +1,66 @@
+{% extends 'languagelessons/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<section class="section">
+    <div class="container">
+        <div class="rows">
+            <div class="row my-2">
+                <article class="panel is-danger">
+                    <p class="panel-heading">
+                      Login
+                    </p>
+                    <div class="panel-block">
+                        <form class="form-container" action="" method="POST">
+                            {% csrf_token %}
+                            <div class="columns is-mobile">
+                                <div class="column my-1 is-6-desktop is-4-tablet is-4-mobile">
+                                    <p class="has-text-weight-bold"> Email Address: </p>
+                                    <p class="has-text-weight-bold my-1"> Account Password: </p> 
+                                </div>
+                                <div class="column mx-4 is-3-desktop is-4-tablet is-4-mobile">
+                                    <input class="control" type="text" name="loginemail" placeholder="Email Address">
+                                    <input class="control" type="password" name="loginpass" placeholder="Password">
+                                    <input class="button is-danger is-light my-3" type="submit" name="login" value="login">
+                                </div>
+                            </div>
+                        </form>
+                      </p>
+                    </div>
+                </article>
+            </div>
+            <div class="row">
+                <article class="panel is-info">
+                    <p class="panel-heading">
+                      Signup
+                    </p>
+                    <div class="panel-block">
+                        <form class="form-container" action="" method="POST">
+                            {% csrf_token %}
+                            <div class="columns is-mobile">
+                                <div class="column my-1 is-4-desktop is-4-tablet is-4-mobile">
+                                    <p class="has-text-weight-bold"> Username:
+                                    <p class="has-text-weight-bold"> Email Address: </p>
+                                    <p class="has-text-weight-bold my-1"> Password: </p> 
+                                    <p class="has-text-weight-bold my-1"> Confirm Password: </p> 
+                                </div>
+                                <div class="column is-3-desktop is-4-tablet is-4-mobile">
+                                    <input class="control" type="text" name="signupusername" placeholder="Username">
+                                    <input class="control" type="text" name="signupemail" placeholder="Email Address">
+                                    <input class="control" type="password" name="signuppass" placeholder="Password">
+                                    <input class="control" type="password" name="signupconfirmpass" placeholder="Confirm Password">
+                                    <input class="button is-info is-light my-3" type="submit" name="signup" value="signup">
+                                </div>
+                            </div>
+                        </form>
+                      </p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
