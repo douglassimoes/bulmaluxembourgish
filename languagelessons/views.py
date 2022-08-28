@@ -76,8 +76,24 @@ def importlesson(request):
 
 def timestampeditor(request,pk):
     lesson = models.Lesson.objects.get(pk=pk)
-    print(request.COOKIES.get('new_translation_preference'))
     lesson_normalized_content = unicodedata.normalize("NFKD", lesson.content_lu)
+    delimiter = "."
+    lesson_phrases = [x+delimiter for x in lesson_normalized_content.split(delimiter) if x]
+    if request.method == "POST":
+        # print(request.POST.keys())
+        content_timestamps = []
+
+        for ts_index in range(0,len(lesson_phrases)):
+            secondsFrom = request.POST.get('secondsfrom'+str(ts_index))
+            secondsTo = request.POST.get('secondsto'+str(ts_index))
+            if secondsFrom == None or secondsTo == None or secondsFrom == '' or secondsTo == '':
+                content_timestamps.append("0,0")
+            else:
+                content_timestamps.append(secondsFrom+","+secondsTo)
+        lesson.content_timestamps = ';'.join(content_timestamps)
+        lesson.save()
+    
+    print(request.COOKIES.get('new_translation_preference'))
     audio_normalized_content = unicodedata.normalize("NFKD", lesson.content_timestamps)
     audio_timestamps = audio_normalized_content.split(";")
 
@@ -86,9 +102,7 @@ def timestampeditor(request,pk):
     for timestamp in audio_timestamps:
         audio_minutes_seconds.append(timestamp.split(","))
 
-    delimiter = "."
 
-    lesson_phrases = [x+delimiter for x in lesson_normalized_content.split(delimiter) if x]
     phrase_id = [ i for i in range(len(lesson_phrases))]
     
     lesson_phrases_words = []
@@ -101,6 +115,7 @@ def timestampeditor(request,pk):
 
 
     lesson_phrases_audio = zip(lesson_phrases,phrase_id,audio_minutes_seconds)
+
 
     # print(list(lesson_phrases_audio))
 

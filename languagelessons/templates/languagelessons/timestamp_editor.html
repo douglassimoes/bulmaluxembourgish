@@ -26,29 +26,35 @@
                     <div class="column is-12-desktop is-6-tablet is-12-mobile has-text-dark has-background-white-ter" style="min-height: 200px;">
                         <h1 class="title is-large"> {{ lesson.title }} </h1>
                         <div class="columns is-multiline">
-                            {% for phrase,phrase_id,audio_timestamp in lesson_phrases_audio %}
-                                <div class="rows" style="width: 100%;">
-                                    <div class="row" style="font-size: large;font-family: Arial; padding-top: 30px;padding-bottom: 15px;background-color: #f5f5f5;" onmouseover="this.style.background='#14a2dd';" onmouseout="this.style.background='#f5f5f5';">
-                                        <div class="columns">
-                                                &nbsp;
-                                                <span style="margin-left: 4px;border-radius: 16px 50px;" onmouseover="this.style.background='#00a1de';" onmouseout="this.style.background='#f5f5f5';">{{ phrase }}&nbsp;</span>
-                                                <strong> From&nbsp; </strong>
-                                                <input type="number" id="secondsfrom" name="quantity" min="01" max="60" value="{{ audio_timestamp.0 }}">
-                                                &nbsp;
-                                                <strong> To </strong>
-                                                &nbsp;
-                                                <input type="number" id="secondsto" name="quantity" min="01" max="60" value="{{ audio_timestamp.1 }}">
-                                                &nbsp;
-                                                <a class="button is-info is-small" id="play{{ phrase_id }}" onclick="playFromTimestamp('{{ phrase_id }}')">
-                                                <audio>
-                                                    <source src="{{ lesson.audio.url }}" type="audio/mpeg">
-                                                </audio>
-                                                <i class="fas fa-play"></i>
-                                            </a>
+                            <form class="form-container" action="" method="POST">
+                                {% csrf_token %}
+                                {% for phrase,phrase_id,audio_timestamp in lesson_phrases_audio %}
+                                    <div class="rows" style="width: 100%;">
+                                        <div class="row" style="font-size: large;font-family: Arial; padding-top: 30px;padding-bottom: 15px;background-color: #f5f5f5;" onmouseover="this.style.background='#14a2dd';" onmouseout="this.style.background='#f5f5f5';">
+                                            <div class="columns">
+                                                    &nbsp;
+                                                    <span style="margin-left: 4px;border-radius: 16px 50px;" onmouseover="this.style.background='#00a1de';" onmouseout="this.style.background='#f5f5f5';">{{ phrase }}&nbsp;</span>
+                                                    <strong> From&nbsp; </strong>
+                                                    <input type="number" id="secondsfrom" name="secondsfrom{{ phrase_id }}" min="0" max="400" value="{{ audio_timestamp.0 }}">
+                                                    &nbsp;
+                                                    <strong> To </strong>
+                                                    &nbsp;
+                                                    <input type="number" id="secondsto" name="secondsto{{ phrase_id }}" min="0" max="400" value="{{ audio_timestamp.1 }}">
+                                                    &nbsp;
+                                                    <a class="button is-info is-small" id="play{{ phrase_id }}" onclick="playFromTimestamp('{{ phrase_id }}')">
+                                                    <audio>
+                                                        <source src="{{ lesson.audio.url }}" type="audio/mpeg">
+                                                    </audio>
+                                                    <i class="fas fa-play"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
+                                {% endfor %}
+                                <div class="has-text-centered">
+                                    <input class="button is-danger is-light my-3"  type="submit" name="save" value="Save Timestamps">
                                 </div>
-                            {% endfor %}
+                            </form>
                         </div>
                     </div>
                 </div>
