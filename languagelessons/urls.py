@@ -9,5 +9,6 @@ urlpatterns = [
     path('lessons/', views.lessons, name='lessons'),
     path('change_translation/', views.change_translation, name='change_translation'),
     path('<int:pk>', views.lesson, name="lesson"),
-    path('importlesson/', views.importlesson, name='importlesson')
+    path('importlesson/', views.importlesson, name='importlesson'),
+    path('timestampeditor/<int:pk>', views.timestampeditor, name='timestampeditor')
 ]

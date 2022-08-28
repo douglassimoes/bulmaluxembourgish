@@ -74,6 +74,38 @@ def importlesson(request):
                 lesson.save()
     return render(request,"languagelessons/importlesson.html",{})
 
+def timestampeditor(request,pk):
+    lesson = models.Lesson.objects.get(pk=pk)
+    print(request.COOKIES.get('new_translation_preference'))
+    lesson_normalized_content = unicodedata.normalize("NFKD", lesson.content_lu)
+    audio_normalized_content = unicodedata.normalize("NFKD", lesson.content_timestamps)
+    audio_timestamps = audio_normalized_content.split(";")
+
+    audio_minutes_seconds = []
+    timestamp_splits = []
+    for timestamp in audio_timestamps:
+        audio_minutes_seconds.append(timestamp.split(","))
+
+    delimiter = "."
+
+    lesson_phrases = [x+delimiter for x in lesson_normalized_content.split(delimiter) if x]
+    phrase_id = [ i for i in range(len(lesson_phrases))]
+    
+    lesson_phrases_words = []
+    for lesson_phrase_id,lesson_phrase in zip(phrase_id,lesson_phrases):
+        lesson_phrase = lesson_phrase.replace(".","").replace(",","").replace("\n"," ").replace("?","")
+        lesson_phrases_words.append(lesson_phrase.split(" "))
+
+    amount_list_extension = len(lesson_phrases) - len(audio_timestamps) - 1
+    new_audio_minutes_seconds  = [ audio_minutes_seconds.append([["0","0"]])  for i in range(amount_list_extension)]
+
+
+    lesson_phrases_audio = zip(lesson_phrases,phrase_id,audio_minutes_seconds)
+
+    # print(list(lesson_phrases_audio))
+
+    return render(request,"languagelessons/timestamp_editor.html",{"lesson": lesson, "lesson_phrases": lesson_phrases,"lesson_phrases_audio":lesson_phrases_audio})
+
 def lessons(request):
     lessonlist = models.Lesson.objects.filter()
     print(lessonlist)
