@@ -35,11 +35,11 @@
                                                     &nbsp;
                                                     <span style="margin-left: 4px;border-radius: 16px 50px;" onmouseover="this.style.background='#00a1de';" onmouseout="this.style.background='#f5f5f5';">{{ phrase }}&nbsp;</span>
                                                     <strong> From&nbsp; </strong>
-                                                    <input type="number" id="secondsfrom" name="secondsfrom{{ phrase_id }}" min="0" max="400" value="{{ audio_timestamp.0 }}">
+                                                    <input type="number" id="secondsfrom{{ phrase_id }}" name="secondsfrom{{ phrase_id }}" min="0" max="400" value="{{ audio_timestamp.0 }}">
                                                     &nbsp;
                                                     <strong> To </strong>
                                                     &nbsp;
-                                                    <input type="number" id="secondsto" name="secondsto{{ phrase_id }}" min="0" max="400" value="{{ audio_timestamp.1 }}">
+                                                    <input type="number" id="secondsto{{ phrase_id }}" name="secondsto{{ phrase_id }}" min="0" max="400" value="{{ audio_timestamp.1 }}">
                                                     &nbsp;
                                                     <a class="button is-info is-small" id="play{{ phrase_id }}" onclick="playFromTimestamp('{{ phrase_id }}')">
                                                     <audio>
@@ -110,14 +110,14 @@
     }
 
     function playFromTimestamp(phrase_id){
-        var secondsFrom = document.getElementById("secondsfrom");
-        var secondsTo = document.getElementById("secondsto");
+        var secondsFrom = document.getElementById("secondsfrom".concat(phrase_id));
+        var secondsTo = document.getElementById("secondsto".concat(phrase_id));
 
         var startTime = secondsFrom.value;
         var endTime = secondsTo.value;
 
-        console.log(startTime)
-        console.log(endTime)
+        // console.log(startTime)
+        // console.log(endTime)
 
         var button = document.getElementById("play".concat(phrase_id))
         const audio = new Audio(button.childNodes[1].currentSrc);

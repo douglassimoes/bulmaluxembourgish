@@ -31,8 +31,16 @@
                                     <div class="row" style="font-size: large;font-family: Arial; padding-top: 5px;padding-bottom: 5px;background-color: #f5f5f5;" onmouseover="this.style.background='#14a2dd';" onmouseout="this.style.background='#f5f5f5';"onclick="translateAndPlaySentence({{ phrase_id }})">
                                         <div class="columns">
                                                 &nbsp;
-                                                {% for word,translation,reference,audiolink in lesson_phrases_words_meanings %} 
-                                                    <span style="margin-left: 4px;border-radius: 16px 50px;" onmouseover="this.style.background='#00a1de';" onmouseout="this.style.background='#f5f5f5';"onclick="translateAndPlayWord('{{ word }}','{{ translation }}','{{ reference }}','{{ audiolink }}')">{{ word }}&nbsp;</span>
+                                                {% for word,word_special,translation,reference,audiolink in lesson_phrases_words_meanings %}
+                                                    {% if word_special == "?" %}
+                                                        <span>&#63;</span>
+                                                    {% else %}
+                                                        {% if forloop.last %}
+                                                            <span style="margin-left: 4px;border-radius: 16px 50px;" onmouseover="this.style.background='#00a1de';" onmouseout="this.style.background='#f5f5f5';"onclick="translateAndPlayWord('{{ word }}','{{ translation }}','{{ reference }}','{{ audiolink }}')">{{ word }}&#46;&nbsp;</span>
+                                                        {% else %}
+                                                            <span style="margin-left: 4px;border-radius: 16px 50px;" onmouseover="this.style.background='#00a1de';" onmouseout="this.style.background='#f5f5f5';"onclick="translateAndPlayWord('{{ word }}','{{ translation }}','{{ reference }}','{{ audiolink }}')">{{ word }}&nbsp;</span>
+                                                        {%endif%}
+                                                    {% endif%} 
                                                 {% endfor %}
                                                 <a class="button is-info is-small" id="play{{ phrase_id }}" onclick="playFromTimestamp('{{ phrase_id }}','{{ audio_timestamp }}')">
                                                 <audio>
@@ -45,7 +53,7 @@
                                     {% if translation_preference == "Portugese" %}
                                     <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px; margin-left: 20px;" id="{{ phrase_id }}">{{ translation_pt }}</div>
                                     {% endif %}
-                                    {% if translation_preference == "English" %}
+                                    {% if translation_preference == None or translation_preference == "English" %}
                                     <div class="row" style="visibility:hidden; font-size: medium; padding-bottom: 5px; margin-left: 20px;" id="{{ phrase_id }}">{{ translation_en }}</div>
                                     {% endif %}
                                     {% if translation_preference == "French" %}

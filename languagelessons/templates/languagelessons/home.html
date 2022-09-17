@@ -14,23 +14,54 @@
                     </p>
                     <form class="form-container" action="" method="POST">
                         <div class="panel-block">
-                                {% csrf_token %}
-                                <div class="columns is-mobile">
-                                    <div class="column is-narrow">
-                                        <p> Choose your <strong>translation preference</strong>, select it and press Let's Learn Button </p>
+                            {% csrf_token %}
+                            <div class="columns is-mobile">
+                                <div class="column">
+                                    <div class="row">
+                                        <p class="panel-tabs" id="languagepanel">
+                                            <a class="is-active" id="usa-tab"><img src="{% static 'images/icon-usa-40.png' %}" style=""></a>
+                                            <a id="br-tab"><img src="{% static 'images/icon-brazil-40.png' %}" style=""></a>
+                                            <a id="fr-tab"><img src="{% static 'images/icon-france-40.png' %}" style=""></a>
+                                        </p>
                                     </div>
-                                    <div class="column is-narrow is-centered">
-                                        <select name="new_translation_preference">
-                                            <option selected="selected" value="English">English</option>
-                                            <option value="Portugese">Portugese</option>
-                                            <option value="French">French</option>
-                                        </select>
+                                    <div class="row" style="visibility:visible;display: none; font-size: medium; padding-bottom: 5px;" id="en_text">
+                                        This site was created to help Luxembourgish language learners at the beginner stage,
+                                        to have access to content written and spoken in native Luxembourgish.
+                                        Initially, the lessons shared on this site will provide translations
+                                        in French, English, and Portuguese to help learners native to these languages to learn
+                                        this rich and beautiful language.
+                                    </div>
+                                    <div class="row" style="visibility:visible;display: none; font-size: medium; padding-bottom: 5px;" id="br_text">
+                                        Este site foi criado para ajudar alunos iniciantes no aprendizado de Luxembourguês,
+                                        compartilhando conteúdo escrito e falado em Luxembourguês nativo para mais e mais pessoas.
+                                        Inicialmente as lições contidas neste site irão prover traduções 
+                                        em Francês, Inglês e Português para ajudar, você nativo em algum desses idiomas,
+                                        que esta aprendendo esta lingua tão rica e tão pouco difundida.
+                                    </div>
+                                    <div class="row" style="visibility:visible;display: none; font-size: medium; padding-bottom: 5px;" id="fr_text">
+                                        Ce site a été créé pour aider les apprenants de langue luxembourgeoise au stade débutant, à avoir accès à du contenu écrit et parlé en luxembourgeois natif. Dans un premier temps, les leçons partagées sur ce site fourniront des traductions en Français, Anglais et Portugais pour aider les apprenants natifs de ces langues à apprendre cette langue riche et belle.
+                                    </div>
+                                    <div class="row">
+                                        <div class="columns">
+                                            <div class="column">
+                                                <p> Choose your <strong>translation preference</strong>, select it and press Let's Learn Button </p>
+                                            </div>
+                                            <div class="column">
+                                                <select name="new_translation_preference">
+                                                    <option selected="selected" value="English">English</option>
+                                                    <option value="Portugese">Portugese</option>
+                                                    <option value="French">French</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="has-text-centered">
+                                            <input class="button is-info is-light my-3"  type="submit" name="save" value="Let's Learn">
+                                        </div>
                                     </div>
                                 </div>
-                            </p>
-                        </div>
-                        <div class="has-text-centered">
-                            <input class="button is-info is-light my-3"  type="submit" name="save" value="Let's Learn">
+                            </div>
                         </div>
                     </form>
                 </article>
@@ -38,5 +69,62 @@
         </div>
     </div>
 </section>
+
+<Script>
+    var flagtabs = document.getElementById("languagepanel");
+    var usatab = document.getElementById("usa-tab");
+    var brtab = document.getElementById("br-tab");
+    var frtab = document.getElementById("fr-tab");
+
+    var en_text = document.getElementById("en_text");
+    var br_text = document.getElementById("br_text");
+    var fr_text = document.getElementById("fr_text");
+
+    flagtabs.addEventListener('click', function(event) {
+
+    //Languages supported
+    const string_usa = "usa";
+    const string_br = "br";
+    const string_fr = "fr";
+
+    if( event.srcElement.currentSrc.indexOf(string_usa) !== -1){
+        console.log("usa active");
+        
+        en_text.style.display = "block";
+        br_text.style.display = "none";
+        fr_text.style.display = "none";
+        en_text.classList.add("active");
+
+        usatab.classList.add("is-active");
+        brtab.classList.remove("is-active");
+        frtab.classList.remove("is-active");
+    }
+    if( event.srcElement.currentSrc.indexOf(string_br) !== -1){
+        console.log("br active");
+
+        br_text.style.display = "block";
+        en_text.style.display = "none";
+        fr_text.style.display = "none";
+        br_text.classList.add("active");
+
+        brtab.classList.add("is-active");
+        usatab.classList.remove("is-active");
+        frtab.classList.remove("is-active");
+    }
+    if( event.srcElement.currentSrc.indexOf(string_fr) !== -1){
+        console.log("fr active");
+
+        fr_text.style.display = "block";
+        en_text.style.display = "none";
+        br_text.style.display = "none";
+        fr_text.classList.add("active");
+
+        frtab.classList.add("is-active");
+        brtab.classList.remove("is-active");
+        usatab.classList.remove("is-active");
+    }
+    
+});
+</Script>
 
 {% endblock %}

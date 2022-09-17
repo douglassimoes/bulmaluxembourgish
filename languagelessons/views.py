@@ -13,12 +13,15 @@ import unicodedata
 # Create your views here.
 
 def home(request):
+    translation_preference = request.COOKIES.get('new_translation_preference')
+    if translation_preference == "":
+        translation_preference = "English"
     if request.method == 'POST':
         print(request.POST.keys())
         response = redirect('lessons')
         response.set_cookie('new_translation_preference',request.POST.get('new_translation_preference'))
         return response
-    return render(request,"languagelessons/home.html",{})
+    return render(request,"languagelessons/home.html",{"translation_preference":translation_preference})
 
 # def signup_view(request):
 #     if request.method == 'POST':
@@ -102,7 +105,6 @@ def timestampeditor(request,pk):
     for timestamp in audio_timestamps:
         audio_minutes_seconds.append(timestamp.split(","))
 
-
     phrase_id = [ i for i in range(len(lesson_phrases))]
     
     lesson_phrases_words = []
@@ -113,16 +115,14 @@ def timestampeditor(request,pk):
     amount_list_extension = len(lesson_phrases) - len(audio_timestamps) - 1
     new_audio_minutes_seconds  = [ audio_minutes_seconds.append([["0","0"]])  for i in range(amount_list_extension)]
 
-
     lesson_phrases_audio = zip(lesson_phrases,phrase_id,audio_minutes_seconds)
-
 
     # print(list(lesson_phrases_audio))
 
     return render(request,"languagelessons/timestamp_editor.html",{"lesson": lesson, "lesson_phrases": lesson_phrases,"lesson_phrases_audio":lesson_phrases_audio})
 
 def lessons(request):
-    lessonlist = models.Lesson.objects.filter()
+    lessonlist = models.Lesson.objects.filter().order_by("title")
     print(lessonlist)
     return render(request,"languagelessons/lessons.html",{"lessons": lessonlist})
 
@@ -162,7 +162,9 @@ def lesson(request, pk):
     phrase_id = [ i for i in range(len(lesson_phrases))]
     
     lesson_phrases_words = []
+    lesson_phrases_words_with_special = []
     for lesson_phrase_id,lesson_phrase in zip(phrase_id,lesson_phrases):
+        lesson_phrases_words_with_special.append(lesson_phrase.split(" "))
         lesson_phrase = lesson_phrase.replace(".","").replace(",","").replace("\n"," ").replace("?","")
         lesson_phrases_words.append(lesson_phrase.split(" "))
 
@@ -215,8 +217,8 @@ def lesson(request, pk):
 
     lesson_phrases_words_meanings = []
     word_meanings = []
-    for list_words in lesson_phrases_words:
-        for word in list_words:
+    for list_words,list_words_special in zip(lesson_phrases_words,lesson_phrases_words_with_special):
+        for word,word_special in zip(list_words,list_words_special):
             if models.Word.objects.filter(word_name=word).exists():
                 word_db = models.Word.objects.filter(word_name=word)[0]
                 meaning = word_db.word_en_meaning
@@ -226,7 +228,7 @@ def lesson(request, pk):
                 meaning = ""
                 reference = ""
                 word_audio = ""
-            word_meanings.append([word,meaning,reference,word_audio])
+            word_meanings.append([word,word_special,meaning,reference,word_audio])
         lesson_phrases_words_meanings.append(word_meanings)
         word_meanings = []
 
@@ -242,6 +244,8 @@ def lesson(request, pk):
 
     print(lesson_phrases_words_meanings)
 
+
     lesson_translation = zip(lesson_phrases,phrase_id,lesson_phrases_words_meanings,translation_pt_phrases,translation_en_phrases,translation_fr_phrases,audio_timestamps)
     print("exceptions: {}, {} words".format(set(exception_list),len(set(exception_list))))
+    print("{},{},{},{},{},{},{}".format(len(lesson_phrases),len(phrase_id),len(lesson_phrases_words_meanings),len(lesson_phrases_words_with_special),len(translation_pt_phrases),len(translation_en_phrases),len(translation_fr_phrases),len(audio_timestamps)))
     return render(request,"languagelessons/lesson.html",{"lesson": lesson, "lesson_words": new_words, "lesson_phrases": lesson_phrases,"lesson_phrases_words_meanings": lesson_phrases_words_meanings, "lesson_translation":lesson_translation,"translation_preference": request.COOKIES.get('new_translation_preference')})
